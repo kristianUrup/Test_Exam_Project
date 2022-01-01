@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { Booking } from './entities/booking.entity';
 import { Customer } from './entities/customer.entity';
 import { Room } from './entities/room.entity';
+import { BookingModule } from './modules/booking.module';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { Room } from './entities/room.entity';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, BookingModule],
 })
 export class AppModule {}

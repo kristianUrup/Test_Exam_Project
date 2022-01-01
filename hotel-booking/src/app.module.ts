@@ -3,20 +3,16 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Booking } from './entities/booking.entity';
-import { Customer } from './entities/customer.entity';
-import { Room } from './entities/room.entity';
-import { BookingModule } from './modules/booking.module';
+import { Booking } from './booking/entities/booking.entity';
+import { Customer } from './customer/entities/customer.entity';
+import { Room } from './room/entities/room.entity';
+import { BookingModule } from './booking/booking.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'test',
+      type: 'sqlite',
+      database: 'db',
       entities: [Customer, Room, Booking],
       synchronize: true,
     }),

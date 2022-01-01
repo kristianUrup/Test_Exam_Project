@@ -8,8 +8,8 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { Booking } from 'src/entities/booking.entity';
-import { BookingService } from 'src/services/booking.service';
+import { Booking } from 'src/booking/entities/booking.entity';
+import { BookingService } from 'src/booking/booking.service';
 import { Response } from 'express';
 
 @Controller('booking')

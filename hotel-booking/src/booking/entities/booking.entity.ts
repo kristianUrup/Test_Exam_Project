@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Column, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Customer } from './customer.entity';
-import { Room } from './room.entity';
+import { Customer } from '../../customer/entities/customer.entity';
+import { Room } from '../../room/entities/room.entity';
 
 export class Booking {
   @PrimaryGeneratedColumn()

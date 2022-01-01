@@ -8,9 +8,9 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { Booking } from 'src/booking/entities/booking.entity';
-import { BookingService } from 'src/booking/booking.service';
 import { Response } from 'express';
+import { BookingService } from './booking.service';
+import { Booking } from './entities/booking.entity';
 
 @Controller('booking')
 export class BookingController {

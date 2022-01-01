@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Room } from 'src/room/entities/room.entity';
 import { Repository } from 'typeorm';
+import { Room } from '../room/entities/room.entity';
 import { Booking } from './entities/booking.entity';
 
 @Injectable()

@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BookingController } from 'src/booking/booking.controller';
-import { Booking } from 'src/booking/entities/booking.entity';
-import { BookingService } from 'src/booking/booking.service';
+import { BookingController } from './booking.controller';
+import { BookingService } from './booking.service';
+import { Booking } from './entities/booking.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Booking])],

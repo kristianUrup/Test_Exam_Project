@@ -14,7 +14,7 @@ export class BookingService {
     private roomRepo: Repository<Room>,
   ) {}
 
-  async createBooking(booking: Booking) {
+  async createBooking(booking: Booking): Promise<boolean> {
     if (booking == null) {
       throw new Error('Booking is null');
     }
@@ -61,5 +61,13 @@ export class BookingService {
       }
     });
     return null;
+  }
+
+  getAll(): Promise<Booking[]> {
+    return this.bookingRepo.find();
+  }
+
+  get(id: number): Promise<Booking> {
+    return this.bookingRepo.findOne(id);
   }
 }

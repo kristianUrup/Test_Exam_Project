@@ -56,7 +56,7 @@ defineFeature(feature, (test) => {
   // Shared WHEN
   const bookingIsPlaced = (when) =>
     when('the booking is placed', () => {
-      bookingService.findAvailableRoom(bookingStart, bookingEnd);
+      result = () => bookingService.findAvailableRoom(bookingStart, bookingEnd);
     });
 
   //Shared THEN

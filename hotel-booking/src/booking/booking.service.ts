@@ -46,7 +46,7 @@ export class BookingService {
       where: { isActive: true },
     });
     const rooms = await this.roomRepo.find();
-    rooms.forEach((room) => {
+    for (const room of rooms) {
       const activeBookingsForCurrentRooms = activeBookings.filter(
         (b) => b.room.id == room.id,
       );
@@ -59,7 +59,7 @@ export class BookingService {
       ) {
         return room;
       }
-    });
+    }
     return null;
   }
 

@@ -2,6 +2,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Get,
   NotFoundException,
@@ -41,7 +42,7 @@ export class BookingController {
     if (created) {
       return 'Booking was succesfully created';
     } else {
-      throw new BadRequestException(
+      throw new ConflictException(
         'Already booked dates. Booking could not be created',
       );
     }

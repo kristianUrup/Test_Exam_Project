@@ -1,5 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { HttpStatus, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  HttpStatus,
+  NotFoundException,
+} from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { BookingController } from '../../booking.controller';
 import { BookingService } from '../../booking.service';
@@ -10,6 +15,7 @@ describe('BookingController', () => {
   const bookingService = {
     getAll: jest.fn(),
     get: jest.fn(),
+    createBooking: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -26,7 +32,7 @@ describe('BookingController', () => {
   });
 
   describe('getAll', () => {
-    it('Return OK status and list of bookings', async () => {
+    it('Return list of bookings', async () => {
       //Arrange
       const array: Booking[] = [];
       const getAllBooking = jest
@@ -37,7 +43,7 @@ describe('BookingController', () => {
       const result = await bookingController.getAll();
 
       //Assert
-      expect(result).toBe(array);
+      expect(result).toEqual(array);
       expect(getAllBooking).toBeCalled();
     });
   });
@@ -56,7 +62,7 @@ describe('BookingController', () => {
       const result = await bookingController.get(id);
 
       //Assert
-      expect(result).toBe(booking);
+      expect(result).toEqual(booking);
       expect(result != null).toBeTruthy();
       expect(getBooking).toBeCalled();
     });
@@ -77,6 +83,59 @@ describe('BookingController', () => {
       expect(t).rejects.toThrow(NotFoundException);
       expect(t).rejects.toThrow('Booking was not found');
       expect(getBooking).toBeCalled();
+    });
+  });
+
+  describe('post', () => {
+    it('Booking is created', async () => {
+      //Arrange
+      const booking = new Booking();
+
+      const createBooking = jest
+        .spyOn(bookingService, 'createBooking')
+        .mockImplementation(() => true);
+
+      //Act
+      const result = await bookingController.post(booking);
+
+      //Assert
+      expect(result).toBe('Booking was succesfully created');
+      expect(createBooking).toBeCalled();
+    });
+
+    it('Body is null and BadRequestException is thrown', async () => {
+      //Arrange
+      const booking = null;
+
+      const createBooking = jest
+        .spyOn(bookingService, 'createBooking')
+        .mockImplementation(() => false);
+
+      //Act
+      const t = () => bookingController.post(booking);
+
+      //Assert
+      await expect(t).rejects.toThrow(BadRequestException);
+      await expect(t).rejects.toThrow('Booking body was invalid');
+      expect(createBooking).toBeCalledTimes(0);
+    });
+
+    it('Could not create booking and BadRequestException is thrown', async () => {
+      //Arrange
+      const booking = new Booking();
+      const createBooking = jest
+        .spyOn(bookingService, 'createBooking')
+        .mockImplementation(() => false);
+
+      //Act
+      const t = () => bookingController.post(booking);
+
+      //Assert
+      await expect(t).rejects.toThrow(ConflictException);
+      await expect(t).rejects.toThrow(
+        'Already booked dates. Booking could not be created',
+      );
+      expect(createBooking).toBeCalled();
     });
   });
 });

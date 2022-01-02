@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { BookingController } from '../../booking.controller';
 import { BookingService } from '../../booking.service';
@@ -58,6 +58,24 @@ describe('BookingController', () => {
       //Assert
       expect(result).toBe(booking);
       expect(result != null).toBeTruthy();
+      expect(getBooking).toBeCalled();
+    });
+
+    it('Booking is not found and NotFoundException is thrown', async () => {
+      //Arrange
+      const id = 1;
+      const booking = null;
+
+      const getBooking = jest
+        .spyOn(bookingService, 'get')
+        .mockImplementation(() => null);
+
+      //Act
+      const t = () => bookingController.get(id);
+
+      //Assert
+      expect(t).rejects.toThrow(NotFoundException);
+      expect(t).rejects.toThrow('Booking was not found');
       expect(getBooking).toBeCalled();
     });
   });

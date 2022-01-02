@@ -1,14 +1,13 @@
 /* eslint-disable prettier/prettier */
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
-  HttpStatus,
+  NotFoundException,
   Param,
   Post,
-  Res,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { BookingService } from './booking.service';
 import { Booking } from './entities/booking.entity';
 
@@ -16,42 +15,35 @@ import { Booking } from './entities/booking.entity';
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
   @Get(':id')
-  async get(@Param() params, @Res({ passthrough: true }) res: Response) {
-    const booking = await this.bookingService.get(params.id);
+  async get(@Param('id') id: number) {
+    const booking = await this.bookingService.get(id);
     if (booking == null) {
-      res.status(HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Booking was not found');
     } else {
-      res.status(HttpStatus.OK);
       return booking;
     }
   }
 
   @Get()
-  async getAll(@Res({ passthrough: true }) res: Response) {
+  async getAll() {
     const bookings = await this.bookingService.getAll();
-    res.status(HttpStatus.OK);
     return bookings;
   }
 
   @Post()
-  async post(
-    @Body() booking: Booking,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async post(@Body() booking: Booking) {
     if (booking == null) {
-      res.status(HttpStatus.NOT_FOUND);
-      return;
+      throw new BadRequestException('Booking body was invalid');
     }
 
     const created: boolean = await this.bookingService.createBooking(booking);
 
     if (created) {
-      res.status(HttpStatus.OK);
-      return;
+      return 'Booking was succesfully created';
     } else {
-      res.status(HttpStatus.CONFLICT).statusMessage =
-        'The booking could not be created. All rooms are occupied. Please try another period.';
-      return;
+      throw new BadRequestException(
+        'Already booked dates. Booking could not be created',
+      );
     }
   }
 }

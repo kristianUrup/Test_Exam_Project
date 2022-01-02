@@ -68,7 +68,7 @@ describe('BookingController', () => {
 
       const getBooking = jest
         .spyOn(bookingService, 'get')
-        .mockImplementation(() => null);
+        .mockImplementation(() => booking);
 
       //Act
       const t = () => bookingController.get(id);

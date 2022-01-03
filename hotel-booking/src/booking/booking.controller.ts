@@ -12,7 +12,7 @@ import {
 import { BookingService } from './booking.service';
 import { Booking } from './entities/booking.entity';
 
-@Controller('booking')
+@Controller('bookings')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
   @Get(':id')

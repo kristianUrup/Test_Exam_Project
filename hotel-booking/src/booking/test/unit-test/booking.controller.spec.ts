@@ -120,7 +120,7 @@ describe('BookingController', () => {
       expect(createBooking).toBeCalledTimes(0);
     });
 
-    it('Could not create booking and BadRequestException is thrown', async () => {
+    it('Could not create booking and ConflictException is thrown', async () => {
       //Arrange
       const booking = new Booking();
       const createBooking = jest

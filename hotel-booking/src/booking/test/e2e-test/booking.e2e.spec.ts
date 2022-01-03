@@ -69,6 +69,7 @@ describe('Booking', () => {
   });
 
   it('/GET booking was found', async () => {
+    //Arrange
     const id = 1;
     const booking: Booking = {
       id: id,
@@ -87,9 +88,164 @@ describe('Booking', () => {
       isActive: booking.isActive,
     };
     jest.spyOn(bookingRepo, 'findOne').mockImplementation(() => booking);
+
+    //Act
     const response = await request(app.getHttpServer()).get(`/bookings/${id}`);
 
+    //Assert
     expect(response.status).toBe(200);
     expect(response.body).toEqual(bookingJson);
+  });
+
+  it('/POST booking was created', async () => {
+    //Arrange
+    const start = new Date();
+    start.setDate(start.getDate() + 10);
+    const end = new Date();
+    end.setDate(end.getDate() + 20);
+
+    const bookingJson = {
+      customer: null,
+      room: null,
+      startDate: new Date().toISOString(),
+      endDate: new Date().toISOString(),
+      isActive: true,
+    };
+    const rooms: Room[] = [
+      { id: 1, description: 'Nice room' },
+      { id: 2, description: 'Big room' },
+      { id: 3, description: 'Nice room with ocean view' },
+    ];
+    const bookings: Booking[] = [
+      {
+        id: 1,
+        startDate: start,
+        endDate: end,
+        isActive: true,
+        room: rooms[0],
+        customer: null,
+      },
+      {
+        id: 2,
+        startDate: start,
+        endDate: end,
+        isActive: true,
+        room: rooms[1],
+        customer: null,
+      },
+    ];
+
+    jest.spyOn(bookingRepo, 'find').mockImplementation(() => bookings);
+    jest.spyOn(bookingRepo, 'create').mockImplementation();
+    jest.spyOn(roomRepo, 'find').mockImplementation(() => rooms);
+
+    //Act
+    const response = await request(app.getHttpServer())
+      .post('/bookings')
+      .send(bookingJson);
+
+    //Assert
+    expect(response.status).toBe(201);
+    expect(response.text).toBe('Booking was succesfully created');
+  });
+
+  it('/POST booking could not be created', async () => {
+    //Arrange
+    const start = new Date();
+    start.setDate(start.getDate() + 10);
+    const end = new Date();
+    end.setDate(end.getDate() + 20);
+
+    const rooms: Room[] = [
+      { id: 1, description: 'Nice room' },
+      { id: 2, description: 'Big room' },
+    ];
+    const bookings: Booking[] = [
+      {
+        id: 1,
+        startDate: start,
+        endDate: end,
+        isActive: true,
+        room: rooms[0],
+        customer: null,
+      },
+      {
+        id: 2,
+        startDate: start,
+        endDate: end,
+        isActive: true,
+        room: rooms[1],
+        customer: null,
+      },
+    ];
+
+    const bookingJson = {
+      customer: null,
+      room: null,
+      startDate: start.toISOString(),
+      endDate: end.toISOString(),
+      isActive: true,
+    };
+
+    jest.spyOn(bookingRepo, 'find').mockImplementation(() => bookings);
+    jest.spyOn(bookingRepo, 'create').mockImplementation();
+    jest.spyOn(roomRepo, 'find').mockImplementation(() => rooms);
+
+    //Act
+    const response = await request(app.getHttpServer())
+      .post('/bookings')
+      .send(bookingJson);
+
+    //Assert
+    expect(response.status).toBe(409);
+    expect(response.body.message).toBe(
+      'Already booked dates. Booking could not be created',
+    );
+  });
+
+  it('/POST booking request is null', async () => {
+    //Arrange
+    const start = new Date();
+    start.setDate(start.getDate() + 10);
+    const end = new Date();
+    end.setDate(end.getDate() + 20);
+
+    const rooms: Room[] = [
+      { id: 1, description: 'Nice room' },
+      { id: 2, description: 'Big room' },
+    ];
+    const bookings: Booking[] = [
+      {
+        id: 1,
+        startDate: start,
+        endDate: end,
+        isActive: true,
+        room: rooms[0],
+        customer: null,
+      },
+      {
+        id: 2,
+        startDate: start,
+        endDate: end,
+        isActive: true,
+        room: rooms[1],
+        customer: null,
+      },
+    ];
+
+    const bookingJson = null;
+
+    jest.spyOn(bookingRepo, 'find').mockImplementation(() => bookings);
+    jest.spyOn(bookingRepo, 'create').mockImplementation();
+    jest.spyOn(roomRepo, 'find').mockImplementation(() => rooms);
+
+    //Act
+    const response = await request(app.getHttpServer())
+      .post('/bookings')
+      .send(bookingJson);
+
+    //Assert
+    expect(response.body.message).toBe('Booking body was invalid');
+    expect(response.status).toBe(400);
   });
 });

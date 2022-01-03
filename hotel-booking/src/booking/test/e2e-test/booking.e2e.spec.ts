@@ -6,12 +6,13 @@ import { Room } from '../../../room/entities/room.entity';
 import { BookingService } from '../../booking.service';
 import { Booking } from '../../entities/booking.entity';
 import * as request from 'supertest';
+import { BookingController } from '../../booking.controller';
 
 describe('Booking', () => {
   let app: INestApplication;
   let bookingService: BookingService;
   const bookingRepo = {
-    find: jest.fn(),
+    find: jest.fn().mockImplementation(() => []),
     create: jest.fn((b) => b),
   };
   const roomRepo = {
@@ -19,6 +20,7 @@ describe('Booking', () => {
   };
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
+      controllers: [BookingController],
       providers: [
         BookingService,
         {
@@ -42,6 +44,9 @@ describe('Booking', () => {
   });
 
   it('/GET bookings', () => {
-    return request(app.getHttpServer()).get('/bookings').expect(200);
+    return request(app.getHttpServer())
+      .get('/bookings')
+      .expect(200)
+      .expect(bookingService.getAll());
   });
 });

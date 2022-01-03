@@ -12,8 +12,9 @@ describe('Booking', () => {
   let app: INestApplication;
   let bookingService: BookingService;
   const bookingRepo = {
-    find: jest.fn().mockImplementation(() => []),
-    create: jest.fn((b) => b),
+    find: jest.fn(),
+    findOne: jest.fn(),
+    create: jest.fn(),
   };
   const roomRepo = {
     find: jest.fn(),
@@ -43,10 +44,52 @@ describe('Booking', () => {
     jest.clearAllMocks();
   });
 
-  it('/GET bookings', () => {
-    return request(app.getHttpServer())
-      .get('/bookings')
-      .expect(200)
-      .expect(bookingService.getAll());
+  it('/GET bookings', async () => {
+    //Arrange
+    jest.spyOn(bookingRepo, 'find').mockImplementation(() => []);
+
+    //Act
+    const response = await request(app.getHttpServer()).get('/bookings');
+
+    //Assert
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(bookingService.getAll());
+  });
+
+  it('/GET booking not found', async () => {
+    //Arrange
+    jest.spyOn(bookingRepo, 'findOne').mockImplementation(() => null);
+
+    //Act
+    const response = await request(app.getHttpServer()).get('/bookings/1');
+
+    //Assert
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe('Booking was not found');
+  });
+
+  it('/GET booking was found', async () => {
+    const id = 1;
+    const booking: Booking = {
+      id: id,
+      customer: null,
+      room: null,
+      startDate: new Date(),
+      endDate: new Date(),
+      isActive: true,
+    };
+    const bookingJson = {
+      id: id,
+      customer: null,
+      room: null,
+      startDate: booking.startDate.toISOString(),
+      endDate: booking.startDate.toISOString(),
+      isActive: true,
+    };
+    jest.spyOn(bookingRepo, 'findOne').mockImplementation(() => booking);
+    const response = await request(app.getHttpServer()).get(`/bookings/${id}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(bookingJson);
   });
 });

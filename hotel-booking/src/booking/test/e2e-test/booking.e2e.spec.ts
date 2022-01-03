@@ -79,12 +79,12 @@ describe('Booking', () => {
       isActive: true,
     };
     const bookingJson = {
-      id: id,
-      customer: null,
-      room: null,
+      id: booking.id,
+      customer: booking.customer,
+      room: booking.room,
       startDate: booking.startDate.toISOString(),
       endDate: booking.startDate.toISOString(),
-      isActive: true,
+      isActive: booking.isActive,
     };
     jest.spyOn(bookingRepo, 'findOne').mockImplementation(() => booking);
     const response = await request(app.getHttpServer()).get(`/bookings/${id}`);

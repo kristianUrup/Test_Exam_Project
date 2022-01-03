@@ -1,4 +1,4 @@
-Feature: CreateBooking
+Feature: Create Booking
   
   Scenario: Create A Booking With Start Date Before Today
     Given the booking period starts before today

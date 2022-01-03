@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Column, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Customer } from '../../customer/entities/customer.entity';
 import { Room } from '../../room/entities/room.entity';
 
+@Entity()
 export class Booking {
   @PrimaryGeneratedColumn()
   id: number;

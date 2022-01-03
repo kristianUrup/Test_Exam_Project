@@ -182,7 +182,7 @@ describe('BookingService', () => {
   });
 
   describe('findAvailableRoom', () => {
-    it('Room is avaiable and returns the room', async () => {
+    it('Room is available and returns the room', async () => {
       //Arrange
       const start = new Date();
       start.setDate(start.getDate() + 10);
